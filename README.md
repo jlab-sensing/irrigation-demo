@@ -60,7 +60,8 @@ python demoPullRequests.py
 
 **Purpose**  
 - Provides full control over an irrigation solenoid connected to an ESP32.  
-- Supports manual control, timed operations, and automatic irrigation based on soil moisture thresholds.  
+- Supports manual control, timed operations, and automatic irrigation based on soil moisture thresholds.
+- IMPORTANT NOTE: The computer running the python script must be on the same WiFi network as the ESP32.
 
 **Configuration**  
 - Update the `ENTS_IP` constant in the script with the ESP32’s IP address. Example:  
