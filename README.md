@@ -1,4 +1,4 @@
-# 📘 README
+# README
 
 ## Overview
 
@@ -16,7 +16,7 @@ Both scripts are designed for testing, automation, and demonstration purposes.
 
 ---
 
-## 🛠 Requirements
+## Requirements
 
 - Python **3.8+**  
 - Installed dependencies (see below)  
@@ -35,7 +35,7 @@ pip install requests
 
 ---
 
-## 📂 Files
+## Files
 
 ### 1. `demoPullRequests.py`
 
@@ -66,7 +66,7 @@ python demoPullRequests.py
   - **Open for a timed duration**  
 
 **Configuration**  
-- Update the `ENTS_IP` constant in the script with the ESP32’s IP address. Example:  
+- Update the `ENTS_IP` constant in the script with the ESP32’s IP address. In jLab, this address is already set to the correct IP used with the WiFi network in the back garden. Example:  
 
 ```python
 ENTS_IP = "172.31.105.241"
@@ -135,7 +135,7 @@ Auto Irrigation: ENABLED
 
 ---
 
-## ⚠️ Notes
+## ⚠Notes
 
 - Ensure the ESP32 device is powered on, connected to the network, and running the irrigation firmware.  
 - The IP address must be reachable from your machine.  
@@ -143,7 +143,7 @@ Auto Irrigation: ENABLED
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 1. Clone the repository:  
 
