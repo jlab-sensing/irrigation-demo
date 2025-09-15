@@ -10,7 +10,7 @@ This repository contains two Python scripts:
 
 2. **`remote_solenoid.py`**  
    - A remote control utility for an irrigation system’s solenoid valve.  
-   - Communicates with an ESP32 device over HTTP to **open**, **close**, or **schedule timed operations** of the solenoid.  
+   - Communicates with an ESP32 device over HTTP to operate the solenoid, monitor soil moisture, and manage automatic irrigation.  
 
 Both scripts are designed for testing, automation, and demonstration purposes.
 
@@ -59,14 +59,11 @@ python demoPullRequests.py
 ### 2. `remote_solenoid.py`
 
 **Purpose**  
-- Allows remote control of an irrigation solenoid valve connected to an ESP32.  
-- Supports three main modes:
-  - **Open indefinitely**  
-  - **Close indefinitely**  
-  - **Open for a timed duration**  
+- Provides full control over an irrigation solenoid connected to an ESP32.  
+- Supports manual control, timed operations, and automatic irrigation based on soil moisture thresholds.  
 
 **Configuration**  
-- Update the `ENTS_IP` constant in the script with the ESP32’s IP address. In jLab, this address is already set to the correct IP used with the WiFi network in the back garden. Example:  
+- Update the `ENTS_IP` constant in the script with the ESP32’s IP address. Example:  
 
 ```python
 ENTS_IP = "172.31.105.241"
@@ -77,69 +74,107 @@ ENTS_IP = "172.31.105.241"
 Run the script with command-line arguments:
 
 ```bash
-python remote_solenoid.py <command> [duration]
+python remote_solenoid.py <command> [options]
 ```
 
-**Commands**
+---
 
+### Available Commands
+
+#### Basic Control
 - `open`  
-  Opens the solenoid indefinitely.  
-
+  Open solenoid indefinitely.  
   ```bash
   python remote_solenoid.py open
   ```
 
 - `close`  
-  Closes the solenoid indefinitely.  
-
+  Close solenoid indefinitely.  
   ```bash
   python remote_solenoid.py close
   ```
 
-- `open_for <seconds>`  
-  Opens the solenoid for a specific time (in seconds).  
-
+- `timed [seconds]`  
+  Open the solenoid for a specified duration (in seconds).  
   ```bash
-  python remote_solenoid.py open_for 30
+  python remote_solenoid.py timed 300
+  ```
+
+- `state`  
+  Check the current solenoid state.  
+  ```bash
+  python remote_solenoid.py state
+  ```
+
+#### Automatic Irrigation
+- `auto_irrigation <min> <max>`  
+  Enable automatic irrigation with custom thresholds and start monitoring.  
+  Opens solenoid when moisture is below `<min>` and closes it when above `<max>`.  
+  ```bash
+  python remote_solenoid.py auto_irrigation 50 75
   ```
 
 - `auto_on`  
-  Enables automatic irrigation mode controlled by ESP32 logic.  
-
+  Enable automatic irrigation using previously set thresholds and start monitoring.  
   ```bash
   python remote_solenoid.py auto_on
   ```
 
 - `auto_off`  
-  Disables automatic irrigation mode.  
-
+  Disable automatic irrigation and stop monitoring.  
   ```bash
   python remote_solenoid.py auto_off
   ```
 
-**Example Output**
+- `set_thresholds <min> <max>`  
+  Update soil moisture thresholds without starting auto irrigation.  
+  ```bash
+  python remote_solenoid.py set_thresholds 25 55
+  ```
 
-```
-Automatic irrigation enabled
-Response: Auto enabled
-Streaming sen0308 humidity data from last 30 seconds...
-Sent initial moisture reading: 62.5%
+- `status`  
+  Show the complete system status including solenoid state, thresholds, and auto mode.  
+  ```bash
+  python remote_solenoid.py status
+  ```
 
-============================================================
-SYSTEM STATUS SUMMARY
-============================================================
-Current Soil Humidity: 62.5%
-Solenoid State: CLOSED
-Auto Irrigation: ENABLED
+- `moisture_check`  
+  Query the ESP32 for the latest soil moisture reading.  
+  ```bash
+  python remote_solenoid.py moisture_check
+  ```
+
+---
+
+### Examples
+
+```bash
+# Open solenoid for 5 minutes
+python remote_solenoid.py timed 300
+
+# Enable auto mode: open when <50%, close when >75%
+python remote_solenoid.py auto_irrigation 50 75
+
+# Update thresholds to 25–55% only
+python remote_solenoid.py set_thresholds 25 55
+
+# Enable automatic irrigation
+python remote_solenoid.py auto_on
+
+# Show full system status
+python remote_solenoid.py status
+
+# Check current moisture reading from ESP32
+python remote_solenoid.py moisture_check
 ```
 
 ---
 
-## ⚠Notes
+## Notes
 
 - Ensure the ESP32 device is powered on, connected to the network, and running the irrigation firmware.  
 - The IP address must be reachable from your machine.  
-- `remote_solenoid.py` is a **client-side utility**: logic for soil moisture monitoring and auto-control runs on the ESP32.  
+- `remote_solenoid.py` is a client-side utility: logic for soil moisture monitoring and auto-control runs on the ESP32.  
 
 ---
 
@@ -160,12 +195,13 @@ Auto Irrigation: ENABLED
 
 3. Update the ESP32 IP in `remote_solenoid.py`.  
 
-4. Run one of the commands to control the solenoid:  
+4. Run one of the commands to control or monitor the solenoid:  
 
    ```bash
    python remote_solenoid.py open
-   python remote_solenoid.py open_for 60
-   python remote_solenoid.py auto_on
+   python remote_solenoid.py timed 60
+   python remote_solenoid.py auto_irrigation 40 70
+   python remote_solenoid.py status
    ```
 
 5. For pull request demo testing:  
