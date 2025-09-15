@@ -32,6 +32,9 @@ If no `requirements.txt` exists, you may need:
 ```bash
 pip install requests
 ```
+```bash
+pip install pandas
+```
 
 ---
 
