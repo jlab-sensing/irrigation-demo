@@ -1,3 +1,4 @@
 # Python package requirements for demoPullRequests.py and remote_solenoid.py
 
 requests>=2.25.0
+pandas
