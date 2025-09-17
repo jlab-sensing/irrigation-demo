@@ -40,7 +40,7 @@ class DirtVizClient:
     
     def get_sen0308_stream(self, cell_id=1448, time_window=30):
         """
-        Get a stream of recent humidity data from sen0308 sensor with streaming enabled
+        Get a stream of recent soil moisture data from sen0308 sensor with streaming enabled
         
         Args:
             cell_id: Cell ID (default: 1448)
@@ -65,7 +65,7 @@ class DirtVizClient:
         }
         
         try:
-            print(f"Streaming sen0308 humidity data from last {time_window} seconds...")
+            print(f"Streaming sen0308 soil moisture data from last {time_window} seconds...")
             response = self.session.get(f"{self.BASE_URL}{endpoint}", params=params, timeout=15)
             response.raise_for_status()
             return response.json()
@@ -103,7 +103,7 @@ def format_data_display(df, cell_id, measurement_type):
         column_name = f"{measurement_name} ({unit})"
     elif measurement_type == "humidity":
         unit = "%"
-        measurement_name = "Humidity"
+        measurement_name = "Soil Moisture"
         column_name = f"{measurement_name} ({unit})"
     elif measurement_type == "flow rate":
         unit = "L/min"
@@ -165,9 +165,9 @@ def format_data_display(df, cell_id, measurement_type):
 
 
 def display_sen0308_stream_menu():
-    """Display the menu for sen0308 streaming options"""
+    """Display the menu for Sen0308 streaming options"""
     print("\n" + "=" * 50)
-    print("SEN0308 HUMIDITY STREAMING MENU".center(50))
+    print("SEN0308 SOIL MOSITURE STREAMING MENU".center(50))
     print("=" * 50)
     print("1. Last 10 seconds of data")
     print("2. Last 30 seconds of data")
@@ -182,11 +182,12 @@ def display_menu():
     print("\n" + "=" * 50)
     print("DIRT VIZ SENSOR DATA VIEWER".center(50))
     print("=" * 50)
+    print("Note: options 1-3 display averaged hourly measurements only.")
     print("Available Cells and Measurements:")
     print("1. Cell 1350 - Pressure (kPa)")
     print("2. Cell 1353 - Flow Rate (L/min)")
-    print("3. Cell 1448 - Soil Humidity (%)")
-    print("4. sen0308 Real-time Humidity Stream")
+    print("3. Cell 1448 - Soil Moisture (%)")
+    print("4. Real-Time Soil Moisture Measurement Stream")
     print("5. Custom Cell (enter cell ID and measurement type)")
     print("6. Exit")
     print("=" * 50)
@@ -343,7 +344,7 @@ if __name__ == "__main__":
                 # Custom cell
                 cell_id = int(input("Enter cell ID: "))
                 sensor_name = input("Enter sensor name (e.g., sen0257, yfs210c, etc.): ")
-                measurement = input("Enter measurement type (e.g., pressure, humidity): ")
+                measurement = input("Enter measurement type (e.g., pressure, moisture): ")
             else:
                 cell_info = get_cell_info(choice)
                 if not cell_info:
@@ -355,7 +356,7 @@ if __name__ == "__main__":
                 measurement = cell_info["measurement"]
             
             # Get time range
-            print(f"\nFetching {measurement} data for cell {cell_id}...")
+            print(f"\nFetching data for cell {cell_id}...")
             start, end = get_time_range()
             
             # Fetch and display data
