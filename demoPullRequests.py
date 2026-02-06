@@ -19,10 +19,17 @@ class DirtVizClient:
     def __init__(self):
         self.session = requests.Session()
 
-    def get_sensor_data(self, name, measurement, cellId, start=None, end=None):
+    def get_sensor_data(self, name, measurement, cellId, start=None, end=None, resample="hour"):
         """Get sensor data for a specific cell"""
 
-        endpoint = f"sensor/?name={name}&measurement={measurement}&cellId={cellId}"
+        if name == "teros12":
+            sensor = "teros"
+        elif name == "power":
+            sensor = "power"
+        else:
+            sensor = "sensor"
+        
+        endpoint = f"{sensor}/?name={name}&measurement={measurement}&cellId={cellId}&resample={resample}"
         params = {}
 
         if start and end:
@@ -328,6 +335,7 @@ if __name__ == "__main__":
     
     while True:
         display_menu()
+        resample = ""
         try:
             choice = int(input("\nEnter your choice (1-6): "))
             
@@ -345,6 +353,7 @@ if __name__ == "__main__":
                 cell_id = int(input("Enter cell ID: "))
                 sensor_name = input("Enter sensor name (e.g., sen0257, yfs210c, etc.): ")
                 measurement = input("Enter measurement type (e.g., pressure, moisture): ")
+                resample = input("Enter resampling option (e.g. none, hour, day): ")
             else:
                 cell_info = get_cell_info(choice)
                 if not cell_info:
@@ -354,13 +363,14 @@ if __name__ == "__main__":
                 cell_id = cell_info["cell_id"]
                 sensor_name = cell_info["sensor_name"]
                 measurement = cell_info["measurement"]
+                resample = input("Enter resampling option (e.g. none, hour, day): ")
             
             # Get time range
             print(f"\nFetching data for cell {cell_id}...")
             start, end = get_time_range()
             
             # Fetch and display data
-            data = client.get_sensor_data(sensor_name, measurement, cell_id, start, end)
+            data = client.get_sensor_data(sensor_name, measurement, cell_id, start, end, resample)
             
             if data:
                 df = pd.DataFrame(data)
